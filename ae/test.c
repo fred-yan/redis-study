@@ -32,7 +32,7 @@ int time_cb(struct aeEventLoop *l,long long id,void *data)
 
 void fin_cb(struct aeEventLoop *l,void *data)
 {
-        puts("call the unknow final function \n");
+    	puts("call the unknow final function \n");
 }
 
 int main(int argc,char *argv[])
@@ -56,5 +56,5 @@ int main(int argc,char *argv[])
         aeMain(l);
 
         puts("Everything is ok !!!\n");
-return 0;
+		return 0;
 }
