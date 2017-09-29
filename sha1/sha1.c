@@ -196,30 +196,44 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX* context)
 /* ================ end of sha1.c ================ */
 
 
+char  _dig_vec_lower[] =
+  "0123456789abcdefghijklmnopqrstuvwxyz";
+
+void octet2hex(char *to, const char *str, unsigned int len)
+{
+    const char *str_end= str + len; 
+    for (; str != str_end; ++str)
+    {
+        *to++= _dig_vec_lower[((unsigned char) *str) >> 4];
+        *to++= _dig_vec_lower[((unsigned char) *str) & 0x0F];
+    }
+    *to= '\0';
+} 
 
 int sha1Test()
 {
-    unsigned char *sha1sum = "b9a678de14e5d7d737f4f90ca80a6db65c3d3025";
-    char *str = "Huawei@123";
+    unsigned char *sha1sum = "b9a678de14e5d7d737f4f90ca80a6db65c3d302";
+    const char *str = "Huawei@123";
 
     SHA1_CTX ctx;
     unsigned char hash[20];
-    int i, j, diff;
-    unsigned int len;
-    unsigned char c;
+    char hashstr[64];
 
     SHA1Init(&ctx);
     SHA1Update(&ctx, str, strlen(str));
     SHA1Final(hash, &ctx);
 
-    for (j = 0; j < 20; j++) {
-      
-    }
+    octet2hex(hashstr, hash, 20);
 
-    if (!diff) {
+    printf("SHA1=%s\n", hashstr);
+    printf("SHALEN=%d\n", strlen(hashstr));
+
+    if (!strncmp(sha1sum, hashstr, strlen(hashstr))) {
         printf("Test passed\n");
+        return 0;
     } else {
         printf("Test failed\n");
+        return 1;
     }
 
 }
@@ -240,15 +254,12 @@ int main(int argc, char **argv)
         len = strlen(argv[1]);
     } else {
         printf("Input error: Only accept 2 argvs");
+        return 1;
     }
 
     SHA1Init(&ctx);
     SHA1Update(&ctx, argv[1], len);
     SHA1Final(hash, &ctx);
-
-    char str[40];
-    sprintf(str, "%20x", hash);
-    printf("%s\n", str);
 
     printf("SHA1=");
     for(i=0;i<20;i++)
